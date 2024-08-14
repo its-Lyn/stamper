@@ -41,11 +41,16 @@ func main() {
 		return
 	}
 
+	var location *time.Location = time.FixedZone("GMT", 0)
 	var formatDate string = fmt.Sprintf("%s %s", strings.TrimSpace(*dateFlag), strings.TrimSpace(*timeFlag))
-	date, err := time.Parse(time_layout, formatDate)
+	date, err := time.ParseInLocation(time_layout, formatDate, location)
 	if err != nil {
 		fmt.Println("\x1b[38;5;9mERR:\x1b[0m Failed to parse date.")
 		return
+	}
+
+	if *timeFlag != "20:30" {
+		fmt.Println("\x1b[38;5;10mNOTE:\x1b[0m The time will be adjusted for your timezone when pasting into discord!")
 	}
 
 	var warnCount int = 0
@@ -65,9 +70,13 @@ func main() {
 			warn = "warnings"
 		}
 
-		success = fmt.Sprintf("%s \x1b[38;5;10mwith\x1b[0m \x1b[38;5;11m%d %s\x1b[0m!\n", success, warnCount, warn)
+		success = fmt.Sprintf("%s \x1b[38;5;10mwith\x1b[0m \x1b[38;5;11m%d %s\x1b[0m!", success, warnCount, warn)
 	} else {
 		success = fmt.Sprintf("%s!", success)
+
+		if *timeFlag != "20:30" {
+			fmt.Println()
+		}
 	}
 
 	fmt.Println(success)
