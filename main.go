@@ -48,14 +48,28 @@ func main() {
 		return
 	}
 
+	var warnCount int = 0
 	var typeUnwrap string = strings.TrimSpace(dateType[*typeFlag])
 	if typeUnwrap == "" {
 		fmt.Println("\x1b[38;5;11mWARN:\x1b[0m Unrecognised date type, using relative.")
 		fmt.Println()
 
 		typeUnwrap = "R"
+		warnCount++
 	}
 
-	fmt.Printf("\x1b[38;5;10mSuccessfully enerated time stamp!\x1b[0m\n")
+	var success string = "\x1b[38;5;10mSuccessfully generated time stamp\x1b[0m"
+	if warnCount > 0 {
+		var warn string = "warning"
+		if warnCount > 1 {
+			warn = "warnings"
+		}
+
+		success = fmt.Sprintf("%s \x1b[38;5;10mwith\x1b[0m \x1b[38;5;11m%d %s\x1b[0m!\n", success, warnCount, warn)
+	} else {
+		success = fmt.Sprintf("%s!", success)
+	}
+
+	fmt.Println(success)
 	fmt.Printf("<t:%d:%s>\n", date.Unix(), typeUnwrap)
 }
